@@ -1,0 +1,88 @@
+label.uploadbutton {
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05); 
+    border-radius: 2px;  
+    height: 16px;
+    padding-bottom: 4px;
+    display: inline-block;
+}
+
+label.uploadbutton input {
+    display: none;   
+}
+
+label.uploadbutton .button {
+    width: 100px;
+    margin-right: 5px;
+    line-height: 20px;
+    text-align: center;
+    background: #7300df;
+    transition: background 0.2s;
+    border: 1px solid rgba(0,0,0,0.1);
+    color: #fff;
+    display: inline-block;
+}
+label.uploadbutton:hover .button {
+    background: green;
+}
+
+label.uploadbutton .input {
+    width: 300px;
+    display: inline-block;
+}
+
+.inl_blk{
+    display: inline-block;
+}
+.slct_style{
+    margin-left: 0.35vw;
+    width: 50px;
+}
+.button_agree{
+    margin-left: 0.35vw;
+	background: #0a4 repeat-x;
+    display: inline-block;
+    padding: 18px 3px 6px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 0.5px 0.5px #999;
+    -webkit-box-shadow: 0 0.5px 0.5px #999;
+    text-shadow: 0 -0.5px 0.5px #222;
+    /*border-bottom: 1px solid #072;*/
+    cursor: pointer;
+}
+.button_bold{
+    margin-left: 0.35vw;
+	background: #bbb repeat-x;
+    display: inline-block;
+    padding: 6px 5px 4.66667px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 1px 1px #999;
+    -webkit-box-shadow: 0 1px 1px #999;
+    text-shadow: 0 -1px 1px #222;
+    cursor: pointer;
+}
+.clicked_bold{
+    margin-left: 0.35vw;
+	background: #555 repeat-x;
+    display: inline-block;
+    padding: 6px 5px 4.66667px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 1px 1px #999;
+    -webkit-box-shadow: 0 1px 1px #999;
+    text-shadow: 0 -1px 1px #222;
+    cursor: pointer;
+}
