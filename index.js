@@ -20,6 +20,31 @@ const myfill = paper.rect(0, 0, widthSizePaper, heightSizePaper).attr('fill', '#
 const mySet = paper.set();
 /**текущая точка*/
 let pointCur = new point.default(0, 0);
+
+//ЛИНИИ
+
+//массив из элементов класса - линия
+let setLines = [];
+//класс линии, ничем сама не управляет, ею управляют её функции, доступные остальным
+class Line{
+    /**
+     * Создаёт линию и связывает её с двумя образами
+     * @param {point} point_from координаты образа родителя
+     * @param {string} number_from уникальный номер родителя
+     * @param {point} point_to кординаты образа потомка
+     * @param {string} number_to уникальный номер потомка
+     */
+    constructor(point_from, number_from, point_to, number_to){
+        this.line = paper.path( ["M", point_from.x, point_from.y, "L", point_to.x, point_to.y ] );
+        this.from = number_from;
+        this.to = number_to;
+        this.pointf = point_from;
+        this.pointt = point_to;
+    }
+}
+
+//ОПИСАНИЕ ПЕРЕМЕЩЕНИЯ
+
 /**опишем, как будут перемещаться объекты
  * lx изменение положения мыши в данный момент времени по х
  * ly изменение положения мыши в данный момент времени по х
@@ -49,53 +74,89 @@ Raphael.st.draggable = function(point) {
     this.drag(moveFnc, startFnc, endFnc); 
 }
 
+//КЛАСС ОБРАЗ
+class Form{
+    //создание образа
+    //уникальный номер по умолчанию для центрального образа - '0'
+    constructor(cursor_x = widthSizePaper/2, cursor_y = heightSizePaper/2, parent = null)
+    {
+        /**текущая точка*/
+        let pointEl = new point.default(0, 0);
+        //let cursor_x = event.clientX;
+        //let cursor_y = event.clientY;
+        /**сдвиг */
+        const shift_y = -50;
+        let sizeCircle = 50;
+        let size_icon_move = 26;
+        let half_sim = size_icon_move / 2;
+        /**треугольник для открытия меню будет чекбоксом */
+        let checked_menu = false;
+
+        //let c = paper.ellipse(cursor_x, y_cur_sh, 50, 50);
+        /**координата у, полученная путём сложения текущего места курсора и сдвига */
+        let y_cur_sh = cursor_y + shift_y;
+        /**координата у, полученная путём сложения текущего места курсора и сдвига за вычетом размера круга */
+        let y_cur_sh_sc = y_cur_sh - sizeCircle;
+        /*в Рафаэль библиотеки нет родителей и сыновей,
+        поэтому нужно делать группы элементов, содержащих в себе в нулевых позициях текст и элемент
+        */
+        let base = paper.set();
+        let rectEl = paper.rect(cursor_x, y_cur_sh_sc,sizeCircle,sizeCircle).attr({'fill': '#000000', 'stroke': '#000000', "stroke-width": 1});
+        let circEl = paper.circle(cursor_x, y_cur_sh , sizeCircle).attr({'fill': '#ffffff', 'stroke': '#000000', "stroke-width": 1});
+        let icon_move = paper.image('images/icon_move.svg',cursor_x - half_sim, y_cur_sh + sizeCircle - half_sim,size_icon_move,size_icon_move);
+        const text = paper.text(cursor_x, y_cur_sh, "rename me").attr({fill: '#888888',"font-size" : 16});
+        /**все элементы единичного элемента кроме иконки движения */
+        let elems_without_mv = paper.set();
+        elems_without_mv.push(circEl);
+        elems_without_mv.push(rectEl);
+        elems_without_mv.push(text);
+        let bbox = elems_without_mv.getBBox();
+        /**При нажатии на верхний треугольник должен всплывать список из иконок */
+        rectEl.click(function()
+        {
+            //если закрыто -- открыть, если открыто, закрыть
+            checked_menu = !checked_menu
+                ?
+                add_all_icons_in_set(base,cursor_x + sizeCircle + 1, y_cur_sh_sc, pointEl, elems_without_mv, bbox)
+                :
+                del_icon_menu(elems_without_mv, 3); //3 -- положение icons_menu в наборе
+        });
+
+        base.push(icon_move);
+        base.draggable(pointEl);
+        base.push(elems_without_mv);
+        mySet.push(base);
+
+        //если нет родителя, то это центральный элемент
+        if (parent === null){
+            this.unum = '0';
+        }else{
+            this.unum = parent.unum + '.' + parent.count_sons;
+            parent.count_sons += 1;
+        }
+        this.count_sons = 0;
+    }
+}
+
+//КЛАСС РЕДАКТОРА
+class Redactor{
+    constructor(){
+        //обозначить включённость редактора
+        this.open = true;
+        //открытие редактора
+
+        //функция изменения причастности (изменение привязанности)
+        
+    }
+    //функция изменения причастности (изменение привязанности)
+    //открытие редактора
+    //закрытие редактора
+    //обозначить включённость редактора
+    //обозначить отключённость редактора
+}
+
 document.body.ondblclick = function(event){
-    /**текущая точка*/
-    let pointEl = new point.default(0, 0);
-
-    let cursor_x = event.clientX;
-    let cursor_y = event.clientY;
-    /**сдвиг */
-    const shift_y = -50;
-    let sizeCircle = 50;
-    let size_icon_move = 26;
-    let half_sim = size_icon_move / 2;
-    /**треугольник для открытия меню будет чекбоксом */
-    let checked_menu = false;
-
-    //let c = paper.ellipse(cursor_x, y_cur_sh, 50, 50);
-    /**координата у, полученная путём сложения текущего места курсора и сдвига */
-    let y_cur_sh = cursor_y + shift_y;
-    /**координата у, полученная путём сложения текущего места курсора и сдвига за вычетом размера круга */
-    let y_cur_sh_sc = y_cur_sh - sizeCircle;
-    /*в Рафаэль библиотеки нет родителей и сыновей,
-    поэтому нужно делать группы элементов, содержащих в себе в нулевых позициях текст и элемент
-    */
-    let base = paper.set();
-    let rectEl = paper.rect(cursor_x, y_cur_sh_sc,sizeCircle,sizeCircle).attr({'fill': '#000000', 'stroke': '#000000', "stroke-width": 1});
-    let circEl = paper.circle(cursor_x, y_cur_sh , sizeCircle).attr({'fill': '#ffffff', 'stroke': '#000000', "stroke-width": 1});
-    let icon_move = paper.image('images/icon_move.svg',cursor_x - half_sim, y_cur_sh + sizeCircle - half_sim,size_icon_move,size_icon_move);
-    const text = paper.text(cursor_x, y_cur_sh, "rename me").attr({fill: '#888888',"font-size" : 16});
-    /**все элементы единичного элемента кроме иконки движения */
-    let elems_without_mv = paper.set();
-    elems_without_mv.push(circEl);
-    elems_without_mv.push(rectEl);
-    elems_without_mv.push(text);
-    let bbox = elems_without_mv.getBBox();
-    /**При нажатии на верхний треугольник должен всплывать список из иконок */
-    rectEl.click(function() {
-        //если закрыто -- открыть, если открыто, закрыть
-        checked_menu = !checked_menu
-            ?
-            add_all_icons_in_set(base,cursor_x + sizeCircle + 1, y_cur_sh_sc, pointEl, elems_without_mv, bbox)
-            :
-            del_icon_menu(elems_without_mv, 3); //3 -- положение icons_menu в наборе
-    });
-
-    base.push(icon_move);
-    base.draggable(pointEl);
-    base.push(elems_without_mv);
-    mySet.push(base);
+    let el = new Form(event.clientX,event.clientY);
 };
 
 /**
@@ -295,7 +356,6 @@ function event_click_on_icon(x, y, wIcon, hIcon, index, base_set, set, bbox) {
     }
     //если нажата кнопка картинки, то открываем окно для ввода ссылки на файл
     if (index === 1){
-
         let label = document.createElement('label');
         let div1 = document.createElement('div');
         let div2 = document.createElement('div');
@@ -345,7 +405,7 @@ function event_click_on_icon(x, y, wIcon, hIcon, index, base_set, set, bbox) {
         );
         //отчистка div элемента от вероятного окна ввода
         let div_elem1 = document.getElementById('for_adding_input');
-        if (div_elem) div_elem.innerHTML = "";
+        if (div_elem1) div_elem1.innerHTML = "";
         let div_elem2 = document.getElementById('for_adding_input2');
         if (div_elem2) div_elem2.innerHTML = "";
         return false;
