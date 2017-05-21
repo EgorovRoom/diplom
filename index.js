@@ -21,10 +21,6 @@ const mySet = paper.set();
 /**текущая точка*/
 let pointCur = new point.default(0, 0);
 
-//ОБЩИЕ ДЕЙСТВИЯ (ПРЕДНАСТРОЙКА)
-//создать объект класса редактор
-let redactor = new Redactor();
-
 //ЛИНИИ
 
 //массив из элементов класса - линия
@@ -78,112 +74,38 @@ Raphael.st.draggable = function(point) {
     this.drag(moveFnc, startFnc, endFnc); 
 }
 
-//КЛАСС ОБРАЗ
-class Form{
-    //создание образа
-    //уникальный номер по умолчанию для центрального образа - '0'
-    constructor(cursor_x = widthSizePaper/2, cursor_y = heightSizePaper/2, parent = null)
-    {
-        /**текущая точка*/
-        let pointEl = new point.default(0, 0);
-        //let cursor_x = event.clientX;
-        //let cursor_y = event.clientY;
-        /**сдвиг */
-        const shift_y = -50;
-        let sizeCircle = 50;
-        let size_icon_move = 26;
-        let half_sim = size_icon_move / 2;
-        /**треугольник для открытия меню будет чекбоксом */
-        //let checked_menu = false;
-
-        //let c = paper.ellipse(cursor_x, y_cur_sh, 50, 50);
-        /**координата у, полученная путём сложения текущего места курсора и сдвига */
-        let y_cur_sh = cursor_y + shift_y;
-        /**координата у, полученная путём сложения текущего места курсора и сдвига за вычетом размера круга */
-        let y_cur_sh_sc = y_cur_sh - sizeCircle;
-        /*в Рафаэль библиотеки нет родителей и сыновей,
-        поэтому нужно делать группы элементов, содержащих в себе в нулевых позициях текст и элемент
-        */
-        let base = paper.set();
-        let rectEl = paper.rect(cursor_x, y_cur_sh_sc,sizeCircle,sizeCircle).attr({'fill': '#000000', 'stroke': '#000000', "stroke-width": 1});
-        let circEl = paper.circle(cursor_x, y_cur_sh , sizeCircle).attr({'fill': '#ffffff', 'stroke': '#000000', "stroke-width": 1});
-        let icon_move = paper.image('images/icon_move.svg',cursor_x - half_sim, y_cur_sh + sizeCircle - half_sim,size_icon_move,size_icon_move);
-        const text = paper.text(cursor_x, y_cur_sh, "rename me").attr({fill: '#888888',"font-size" : 16});
-        /**все элементы единичного элемента кроме иконки движения */
-        let moving_set = paper.set();
-        moving_set.push(circEl);
-        moving_set.push(rectEl);
-        moving_set.push(text);
-        let bbox = moving_set.getBBox();
-
-        base.push(icon_move);
-        base.draggable(pointEl);
-        base.push(moving_set);
-        mySet.push(base);
-
-        //если нет родителя, то это центральный элемент
-        if (parent === null){
-            this.unum = '0';
-        }else{
-            this.unum = parent.unum + '.' + parent.count_sons;
-            parent.count_sons += 1;
-        }
-        this.count_sons = 0;
-
-        //ВСТРАИВАНИЕ СОБЫТИЙ
-
-        /**При нажатии на верхний треугольник должен всплывать список из иконок */
-        rectEl.click(function()
-        {
-            //если закрыто -- открыть
-            if (!redactor.isOpen) {
-                redactor.isOpen = true;
-                redactor.open(this.unum, base, cursor_x + sizeCircle + 1, y_cur_sh_sc, pointEl, moving_set, bbox);
-            } else { //если открыто, закрыть + если было открыто у другого! - открыть
-                const str_Unum = redactor.str_uniqNum;
-                redactor.close(moving_set);
-                //если редактор открыт, но не у данного элемента
-                if (str_Unum !== this.unum){
-                    //открыть его у данного
-                    redactor.open(this.unum, base,cursor_x + sizeCircle + 1, y_cur_sh_sc, pointEl, moving_set, bbox);
-                    redactor.isOpen = true;
-                }else{
-                    redactor.isOpen = false;
-                }
-            }
-        });
-
-    }
-    /**уникальная строка с номером образа*/
-    unum;
-    /**количество сыновей образа */
-    count_sons;
-}
-
-//КЛАСС РЕДАКТОРА
-class Redactor{
+//ОБЪЕКТ РЕДАКТОР
+function Redactor() {
     /**Объявление редактора */
-    constructor(){
-        //обозначить отключённость редактора
-        this.isOpen = false;
-        this.str_uniqNum = '';
-        this.base_set = null;
-        this.moving_set = null;
-    }
+    //обозначить отключённость редактора
+    this.isOpen = false;
+    this.str_uniqNum = '';
+    this.base_set = null;
+    this.moving_set = null;
+    this.bbox = null;
+
     //функция изменения причастности (изменение привязанности)
     /**открытие редактора*/
-    open(uniqNum, bset, x, y, pC, mset, bbox){
-        this.add_all_icons_in_set(bset, x, y, pC, mset, bbox);
+    this.open = function(uniqNum, bset, mset, x, y, pC, bbox){
         this.base_set = bset;
         this.moving_set = mset;
-        str_uniqNum = uniqNum;
+        this.bbox = bbox;
+        this.add_all_icons_in_set(x, y, pC);
+        this.str_uniqNum = uniqNum;
+        alert('create');
     }
     /**закрытие редактора*/
-    close(set){
-        this.del_icon_menu(set, 3); //3 -- положение icons_menu в наборе
+    this.close = function(){
+        this.del_icon_menu(3); //3 -- положение icons_menu в наборе
         this.base_set = null;
         this.moving_set = null;
-        str_uniqNum = '';
+        this.str_uniqNum = '';
+        //отчистка div элемента от вероятного окна ввода
+        let div_elem1 = document.getElementById('for_adding_input');
+        if (div_elem1) div_elem1.innerHTML = "";
+        let div_elem2 = document.getElementById('for_adding_input2');
+        if (div_elem2) div_elem2.innerHTML = "";
+        alert('delete');
     }
     //обозначить включённость редактора
     //обозначить отключённость редактора
@@ -197,9 +119,9 @@ class Redactor{
      * @param {number} y координата у для левого края иконки
      * @param {point.default} pC разница в координатах между созданием объекта и текущим его положением
      * @param {*} base_set набор с образом
-     * @param {*} set набор с окружностью и уголком
+     * @param {*} set набор из движимых элементов
      */
-    add_all_icons_in_set(base_set, x, y, pC, set, bbox){
+    this.add_all_icons_in_set = function(x, y, pC){
         let all_icons = paper.set();
         /**Ширина иконка */
         const wIcon = 30;//39;
@@ -214,21 +136,20 @@ class Redactor{
         ];
         //добавить иконки
         for (let i = 0; i < srcs.length; i++){
-            this.add_icons_in_set(x, y + i*hIcon, wIcon, hIcon, srcs[i], i, all_icons, pC, base_set, set, bbox);
+            this.add_icons_in_set(x, y + i*hIcon, wIcon, hIcon, srcs[i], i, all_icons, pC);
         };
         //переместить меню к главному объекту, если главный объект был сдвинут с места создания
         all_icons.translate(pC.x, pC.y);
         //вставка набора иконок в основной набор
-        set.push(all_icons);
+        this.moving_set.push(all_icons);
     }
     /**
-     * Функция удаления меню из объекта единичного элемента
-     * @param {RaphaelSet} base_set набор, содержащий в себе все элементы образа, кроме иконки движения
+     * Функция удаления меню из образа
      * @param {number} index какой элемент вытащить из набора
      */
-    del_icon_menu(base_set, index){
+    this.del_icon_menu = function(index){
         /**вытащить из набора набор с иконками */
-        let item = base_set.items.splice(index,1);
+        let item = this.moving_set.items.splice(index,1);
         //для каждой иконки
         item.forEach(
             function(icons_of_item){
@@ -247,7 +168,8 @@ class Redactor{
                 icons_of_item.remove();
             }
         );
-    }
+
+    };
 
     //ВЛОЖЕННОСТЬ УРОВНЯ 2
     /**
@@ -261,9 +183,10 @@ class Redactor{
      * @param {RaphaelSet} set_for_pushing набор, куда будем складывать созданные элементы
      * @param {point.default} pC разница в координатах между созданием объекта и текущим его положением
      * @param {*} base_set набор с образом
-     * @param {*} set набор с окружностью и уголком
+     * @param {*} set набор из движимых элементов
+     * @param {*} bbox коробка набора
      */
-    add_icons_in_set(x, y, wIcon, hIcon, src, index, set_for_pushing, pC, base_set, inside_set, bbox){
+    this.add_icons_in_set = function(x, y, wIcon, hIcon, src, index, set_for_pushing, pC){
         /**текущая точка*/
         let point_с = new point.default(pC.x, pC.y);
         /**иконка для открытия меню будет чекбоксом */
@@ -281,6 +204,8 @@ class Redactor{
         icon.push(fill);
         icon.push(image);
 
+        let copyThis = this;
+
         //При клике на картинку делать:
         image.click( function() {
             let del_element;
@@ -290,10 +215,10 @@ class Redactor{
             if (!checked_icon_menu || (index === 1 && parent_div2 === '') || (index === 0 && parent_div1 === '')){
                 if ((index === 1 && parent_div2 !== '')
                 || (index === 0 && parent_div1 !== '')){
-                    checked_icon_menu = this.del_menu_after_click_on_icon(set,del_element,index);
+                    checked_icon_menu = copyThis.del_menu_after_click_on_icon(del_element,index);
                 }else{
                     //вызвать функцию события при клике на иконку
-                    del_element = this.event_click_on_icon(x, y, wIcon, hIcon, index, base_set, inside_set, bbox);
+                    del_element = copyThis.event_click_on_icon(x, y, wIcon, hIcon, index);
                     if (index === 2){
                         set = del_element.translate(pC.x, pC.y);
                         icon.push(set);
@@ -301,7 +226,7 @@ class Redactor{
                     }
                 }
             }else{
-                checked_icon_menu = this.del_menu_after_click_on_icon(set,del_element,index);
+                checked_icon_menu = copyThis.del_menu_after_click_on_icon(del_element,index);
             }
         });
         set_for_pushing.push(icon);
@@ -315,14 +240,12 @@ class Redactor{
      * @param {number} wIcon размер иконки по ширине
      * @param {number} hIcon размер иконки по высоте
      * @param {number} index номер иконки
-     * @param {*} base_set набор с образом
-     * @param {*} set набор с окружностью и уголком
      */
-    event_click_on_icon(x, y, wIcon, hIcon, index, base_set, set, bbox) {
+    this.event_click_on_icon = function(x, y, wIcon, hIcon, index) {
         //Make case
         if (index === 0){
-            const posx = widthSizePaper - bbox.width / 2 - bbox.x;
-            const posy = heightSizePaper - bbox.height / 2 - bbox.y;
+            //const posx = widthSizePaper - bbox.width / 2 - bbox.x;
+            //const posy = heightSizePaper - bbox.height / 2 - bbox.y;
 
             let d = document.createElement('div');
             d.innerHTML = 'Ваш текст: ';
@@ -359,6 +282,8 @@ class Redactor{
             d.appendChild(button_bold);
             d.appendChild(slct);
 
+            let copyThis = this;
+
             let bold = false;
             button_bold.onclick = function(){
                 if (!bold){
@@ -371,7 +296,7 @@ class Redactor{
             };
             button.onclick = function(){
                 //выдираем текст из набора всех элементов образа кроме перемещения
-                let txt = set.items.splice(0,4);
+                let txt = copyThis.moving_set.items.splice(0,4);
                 //функция изучения текста и разбиения его на строчки, возвращает массив, его длина будет говорить о сдвиге наверх
                 const new_text = check_text(newInput.value);
                 //С помощью данной строчки можно изменять текст внутри
@@ -382,7 +307,7 @@ class Redactor{
                     txt[2].attr({'font-weight': 'normal'});
                 }
                 //возвращаем выдернутые элементы
-                set.push(txt[0],txt[1],txt[2],txt[3]);
+                copyThis.moving_set.push(txt[0],txt[1],txt[2],txt[3]);
             };
             return true;
         }
@@ -424,26 +349,30 @@ class Redactor{
             for (let i = 0; i < colors.length; i++){
                 //находясь на иконке цвета мы имеем "y" такой,
                 //что он находится на уровне этой иконки,а мы хотим цвета расположить сверху вниз от начала
-                let fill = create_fill_for_icon_color(x,y + i*hIcon,wIcon,hIcon,colors[i],i,set);
+                let fill = this.create_fill_for_icon_color(x,y + i*hIcon,wIcon,hIcon,colors[i],i);
                 icon_set.push(fill);
             }
             return icon_set;
         }
         if (index === 3){
-            base_set.forEach(
+            this.base_set.forEach(
                 function(el){
                     el.remove();
                 }
             );
-            //отчистка div элемента от вероятного окна ввода
-            let div_elem1 = document.getElementById('for_adding_input');
-            if (div_elem1) div_elem1.innerHTML = "";
-            let div_elem2 = document.getElementById('for_adding_input2');
-            if (div_elem2) div_elem2.innerHTML = "";
+
+            this.close();
+            this.isOpen = false;
+
             return false;
         }
     }
-    del_menu_after_click_on_icon(set,del_element,index){
+    /**
+     * 
+     * @param {*} del_element 
+     * @param {*} index 
+     */
+    this.del_menu_after_click_on_icon = function(del_element,index){
         if (index === 0){
             document.getElementById('for_adding_input').innerHTML = "";
         }
@@ -451,7 +380,7 @@ class Redactor{
             document.getElementById('for_adding_input2').innerHTML = "";
         }
         if (index === 2){
-            set.forEach(function(color){
+            this.moving_set.forEach(function(color){
                 color.remove();
             });
         }
@@ -467,15 +396,14 @@ class Redactor{
      * @param {number} hIcon размер иконки по высоте
      * @param {string} attribute выбранный цвет
      * @param {number} index номер иконки цвета
-     * @param {*} set набор с окружностью и уголком
      */
-    create_fill_for_icon_color(x,y,wIcon,hIcon,attribute,index,set){
+    this.create_fill_for_icon_color = function(x,y,wIcon,hIcon,attribute,index){
+        let copyThis = this;
         let fill = paper.rect(x,y,wIcon,hIcon).attr({"fill": attribute, 'stroke': '#000', "stroke-width": 1});
         //требуется изменить при клике -- аттрибут цвета окружности и треугольника
-
         fill.click( function() {
-            /**вытащить из набора круг и уголок */
-            let el = set.items.splice(0,4);
+            //вытащить из набора круг и уголок
+            let el = copyThis.moving_set.items.splice(0,4);
             el[0].attr({"stroke": attribute});
             el[1].attr({"fill": attribute, "stroke": attribute});
             set.push(el[0],el[1],el[2],el[3]);
@@ -484,29 +412,125 @@ class Redactor{
         return fill;
     }
 
+    //ЛОКАЛЬНЫЕ ФУНКЦИИ
+
+    //подготовка текста для образа
+    function check_text(text){
+        let re = new RegExp('\  ','g');
+        text = text.replace(re,'\n');
+        return text;
+    }
 
     //ОБЪЯВЛЕНИЕ ПРИЗНАКОВ
+        /**состояние редактора */
+        //isOpen;
+        /**строка причастности*/
+        //str_uniqNum;
+        /**набор с образом (главный)*/
+        //base_set;
+        /**набор из движимых элементов*/
+        //moving_set;
+};
 
-    /**состояние редактора */
-    isOpen;
-    /**строка причастности*/
-    str_uniqNum;
-    /**набор с образом (главный)*/
-    base_set;
-    /**набор из движимых элементов*/
-    moving_set;
-}
+
+//КЛАСС ОБРАЗ
+class Form{
+    //создание образа
+    //уникальный номер по умолчанию для центрального образа - '0'
+    constructor(cursor_x = widthSizePaper/2, cursor_y = heightSizePaper/2, parent = null)
+    {
+        /**текущая точка*/
+        let pointEl = new point.default(0, 0);
+        //let cursor_x = event.clientX;
+        //let cursor_y = event.clientY;
+        /**сдвиг */
+        const shift_y = -50;
+        const sizeCircle = 50;
+        const size_icon_move = 26;
+        const half_sim = size_icon_move / 2;
+
+
+        /**треугольник для открытия меню будет чекбоксом */
+        //let checked_menu = false;
+
+        //let c = paper.ellipse(cursor_x, y_cur_sh, 50, 50);
+        /**координата у, полученная путём сложения текущего места курсора и сдвига */
+        let y_cur_sh = cursor_y + shift_y;
+        /**координата у, полученная путём сложения текущего места курсора и сдвига за вычетом размера круга */
+        let y_cur_sh_sc = y_cur_sh - sizeCircle;
+        /*в Рафаэль библиотеки нет родителей и сыновей,
+        поэтому нужно делать группы элементов, содержащих в себе в нулевых позициях текст и элемент
+        */
+        let base = paper.set();
+        let rectEl = paper.rect(cursor_x, y_cur_sh_sc,sizeCircle,sizeCircle).attr({'fill': '#000000', 'stroke': '#000000', "stroke-width": 1});
+        let circEl = paper.circle(cursor_x, y_cur_sh , sizeCircle).attr({'fill': '#ffffff', 'stroke': '#000000', "stroke-width": 1});
+        let text = paper.text(cursor_x, y_cur_sh, "rename me").attr({fill: '#888888',"font-size" : 16});
+        let icon_move = paper.image('images/icon_move.svg',cursor_x - half_sim, y_cur_sh + sizeCircle - half_sim,size_icon_move,size_icon_move);
+        //let icon_add = paper.image('images/icon_move.svg',cursor_x - half_sim, y_cur_sh + sizeCircle - half_sim,size_icon_move,size_icon_move);
+
+        /**все элементы единичного элемента кроме иконки движения */
+        let moving_set = paper.set();
+        moving_set.push(circEl);
+        moving_set.push(rectEl);
+        moving_set.push(text);
+        let bbox = moving_set.getBBox();
+
+        base.push(icon_move);
+        base.draggable(pointEl);
+        base.push(moving_set);
+        mySet.push(base);
+
+        //если нет родителя, то это центральный элемент
+        if (parent === null){
+            /**уникальная строка с номером образа*/
+            this.unum = '0';
+        }else{
+            this.unum = parent.unum + '.' + parent.count_sons;
+            parent.count_sons += 1;
+        }
+        /**количество сыновей образа */
+        this.count_sons = 0;
+        
+        //ВСТРАИВАНИЕ СОБЫТИЙ
+
+        let copyThis = this;
+        
+        /**При нажатии на верхний треугольник должен всплывать список из иконок */
+        rectEl.click(function()
+        {
+            //если закрыто -- открыть
+            if (!redactor.isOpen) {
+                redactor.isOpen = true;
+                redactor.open(copyThis.unum, base, moving_set, cursor_x + sizeCircle + 1, y_cur_sh_sc, pointEl, bbox);
+            } else { //если открыто, закрыть + если было открыто у другого! - открыть
+                const str_Unum = redactor.str_uniqNum;
+                //закрываем старый редактор
+                redactor.close();
+                //если редактор открыт, но не у данного элемента
+                if (str_Unum === copyThis.unum){
+                    //открыть его у данного
+                    redactor.open(copyThis.unum, base, moving_set, cursor_x + sizeCircle + 1, y_cur_sh_sc, pointEl, bbox);
+                    redactor.isOpen = true;
+                }else{
+                    redactor.isOpen = false;
+                }
+            }
+        });
+
+    }
+    /**уникальная строка с номером образа*/
+    //unum;
+    /**количество сыновей образа */
+    //count_sons;
+};
+
+//ОБЩИЕ ДЕЙСТВИЯ (ПРЕДНАСТРОЙКА)
+//создать объект класса редактор
+let redactor = new Redactor();
 
 document.body.ondblclick = function(event){
     let el = new Form(event.clientX,event.clientY);
 };
-
-//подготовка текста для образа
-function check_text(text){
-    let re = new RegExp('\  ','g');
-    text = text.replace(re,'\n');
-    return text;
-}
 
 //описать событие при нажатии на кружок
 //появится панель быстрого доступа с иконками
