@@ -432,7 +432,6 @@ function Redactor() {
         //moving_set;
 };
 
-
 //КЛАСС ОБРАЗ
 class Form{
     //создание образа
@@ -448,7 +447,6 @@ class Form{
         const sizeCircle = 50;
         const size_icon_move = 26;
         const half_sim = size_icon_move / 2;
-
 
         /**треугольник для открытия меню будет чекбоксом */
         //let checked_menu = false;
