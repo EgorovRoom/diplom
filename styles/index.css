@@ -3,6 +3,7 @@ label.uploadbutton {
     border-radius: 2px;  
     height: 16px;
     padding-bottom: 4px;
+    margin-top: -5px;
     display: inline-block;
 }
 
@@ -32,6 +33,10 @@ label.uploadbutton .input {
 
 .inl_blk{
     display: inline-block;
+    white-space: normal;
+}
+.inl_blk2{
+    display: inline-block;
 }
 .slct_style{
     margin-left: 0.35vw;
@@ -46,10 +51,10 @@ label.uploadbutton .input {
     text-decoration: none;
     font-weight: bold;
     line-height: 1;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-box-shadow: 0 0.5px 0.5px #999;
-    -webkit-box-shadow: 0 0.5px 0.5px #999;
+    /*-moz-border-radius: 5px;*/
+    /*-webkit-border-radius: 5px;*/
+    /*-moz-box-shadow: 0 0.5px 0.5px #999;*/
+    /*-webkit-box-shadow: 0 0.5px 0.5px #999;*/
     text-shadow: 0 -0.5px 0.5px #222;
     /*border-bottom: 1px solid #072;*/
     cursor: pointer;
