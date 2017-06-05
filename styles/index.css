@@ -1,8 +1,43 @@
+.center_text {
+    background: #666;
+    color: #fff;
+    margin-left: -40px;
+    text-align: center;
+}
+.center {
+    margin-left: -40px;
+    text-align: center;
+}
+.left_text{
+    margin-left: -50px;
+}
+.base_text {
+    color: #fff;
+    margin-left: 0px;
+    margin-right: 24px;
+    text-align: center;
+}
+header {
+    height: 50px;
+}
+menu {
+    background: #909090;
+    margin-top: -8px;
+    margin-left: -10px;
+    width: 204px;
+    float: left;
+}
+article {
+    margin-right: 240px;
+    display: block;
+}
 label.uploadbutton {
+    margin-left: -7px;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05); 
     border-radius: 2px;  
     height: 16px;
     padding-bottom: 4px;
+    margin-top: -5px;
     display: inline-block;
 }
 
@@ -26,12 +61,63 @@ label.uploadbutton:hover .button {
 }
 
 label.uploadbutton .input {
+    margin-left: 5px;
+    margin-right: 8px;
     width: 300px;
     display: inline-block;
 }
 
-.inl_blk{
+.uniqSizeWidth{
+    vertical-align: middle;
+    padding-top: 32px;
+    margin-top: -10px;
+    margin-left: -10px;
+    width: 242px;
+    height: 20px;
+    background: #444;
+
     display: inline-block;
+}
+.addy_el{
+    padding-top: 32px;
+    margin-top: -10px;
+    margin-left: -4px;
+    width: 16px;
+    height: 20px;
+    background: #909090;
+
+    display: inline-block;
+    vertical-align: middle;
+}
+.addy_el2{
+    padding-top: 32px;
+    margin-top: -10px;
+    margin-left: -4px;
+    margin-right: 8px;
+    width: 20px;
+    height: 20px;
+    background: #666;
+
+    display: inline-block;
+    vertical-align: middle;
+}
+.addy_el3{
+    padding-top: 32px;
+    margin-top: -10px;
+    margin-left: -4px;
+    width: 20px;
+    height: 20px;
+    background: #909090;
+
+    display: inline-block;
+    vertical-align: middle;
+}
+.inl_blk{
+    margin-top: -10px;
+    vertical-align: middle;
+    display: inline-block;
+    white-space: normal;
+    margin-right: 6px;
 }
 .slct_style{
     margin-left: 0.35vw;
@@ -46,10 +132,10 @@ label.uploadbutton .input {
     text-decoration: none;
     font-weight: bold;
     line-height: 1;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-box-shadow: 0 0.5px 0.5px #999;
-    -webkit-box-shadow: 0 0.5px 0.5px #999;
+    /*-moz-border-radius: 5px;*/
+    /*-webkit-border-radius: 5px;*/
+    /*-moz-box-shadow: 0 0.5px 0.5px #999;*/
+    /*-webkit-box-shadow: 0 0.5px 0.5px #999;*/
     text-shadow: 0 -0.5px 0.5px #222;
     /*border-bottom: 1px solid #072;*/
     cursor: pointer;
