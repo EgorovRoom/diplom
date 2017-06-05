@@ -1,36 +1,93 @@
+html{
+  position: relative;
+  min-height: 100%;
+}
 .center_text {
-    background: #666;
+    font-family: sans-serif;
     color: #fff;
+
+    background: #666;
     margin-left: -40px;
     text-align: center;
 }
 .center {
+    font-family: sans-serif;
     margin-left: -40px;
     text-align: center;
 }
 .left_text{
+    font-family: sans-serif;
     margin-left: -50px;
 }
 .base_text {
+    font-family: sans-serif;
     color: #fff;
+
     margin-left: 0px;
     margin-right: 24px;
-    text-align: center;
+    text-align: left;
+}
+.inl_blk_menu_text{
+    font-family: sans-serif;
+    color: #000;
+
+    vertical-align: middle;
+    display: inline-block;
+    white-space: normal;
+
+    margin-top: 0px;
+    margin-bottom: 5px;
+    margin-right: 6px;
+}
+.margin_left{
+    color: #fff;
+    margin-left: -30px;
+}
+body{
+    height:100%;
 }
 header {
-    height: 50px;
+    height:100%;
 }
-menu {
-    background: #909090;
-    margin-top: -8px;
-    margin-left: -10px;
-    width: 204px;
-    float: left;
+.main{
+    height:100%;
 }
-article {
-    margin-right: 240px;
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: #666;
+}
+.clearfix:after{
+    content: ".";
     display: block;
+    clear: both;
+    visibility: hidden;
+    /*line-height: 0;*/
+    /*height: 0;*/
+    margin-left: -4px;
+    margin-right: -8px;
+    height:100%;
 }
+.l {
+    width: 202px;
+    float: left;
+    background: #909090;
+    margin-top:  0px;
+    margin-left: -10px;
+    height: 100%;
+}
+.c {
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+    height:100%;
+    overflow: hidden;
+}
+
 label.uploadbutton {
     margin-left: -7px;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05); 
@@ -113,38 +170,49 @@ label.uploadbutton .input {
     vertical-align: middle;
 }
 .inl_blk{
-    margin-top: -10px;
+    font-family: sans-serif;
+
     vertical-align: middle;
     display: inline-block;
+
     white-space: normal;
+    margin-top: -10px;
     margin-right: 6px;
 }
 .slct_style{
     margin-left: 0.35vw;
+    display: inline-block;
+    vertical-align: middle;
     width: 50px;
 }
 .button_agree{
-    margin-left: 0.35vw;
-	background: #0a4 repeat-x;
     display: inline-block;
-    padding: 18px 3px 6px;
+
+    margin-left: 0vw;
+    margin-top: -1px;
+    margin-bottom: -1px;
+	background: green repeat-x;
+    padding: 5px 3px 5px;
     color: #fff;
     text-decoration: none;
     font-weight: bold;
     line-height: 1;
-    /*-moz-border-radius: 5px;*/
-    /*-webkit-border-radius: 5px;*/
-    /*-moz-box-shadow: 0 0.5px 0.5px #999;*/
-    /*-webkit-box-shadow: 0 0.5px 0.5px #999;*/
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 0.5px 0.5px #999;
+    -webkit-box-shadow: 0 0.5px 0.5px #999;
     text-shadow: 0 -0.5px 0.5px #222;
-    /*border-bottom: 1px solid #072;*/
+    /*border-bottom: 1px solid #072*/;
     cursor: pointer;
 }
 .button_bold{
+    display: inline-block;
+
     margin-left: 0.35vw;
 	background: #bbb repeat-x;
-    display: inline-block;
-    padding: 6px 5px 4.66667px;
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-bottom: 3px;
     color: #fff;
     text-decoration: none;
     font-weight: bold;
@@ -157,10 +225,13 @@ label.uploadbutton .input {
     cursor: pointer;
 }
 .clicked_bold{
+    display: inline-block;
+
     margin-left: 0.35vw;
 	background: #555 repeat-x;
-    display: inline-block;
-    padding: 6px 5px 4.66667px;
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-bottom: 3px;
     color: #fff;
     text-decoration: none;
     font-weight: bold;
@@ -171,4 +242,11 @@ label.uploadbutton .input {
     -webkit-box-shadow: 0 1px 1px #999;
     text-shadow: 0 -1px 1px #222;
     cursor: pointer;
+}
+/*.padding_tb{
+    padding-top: 6px;
+    padding-bottom: 5px;
+}*/
+.white_text{
+    color: #fff;
 }

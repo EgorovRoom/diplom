@@ -9,31 +9,45 @@
 <body>
 <header>
 	<div class='uniqSizeWidth'></div>
-	<div class='addy_el'></div>
 	<div id='for_adding_input' class='inl_blk'></div>
-	<div class='addy_el2'></div>
 	<div id='for_adding_input2' class='inl_blk'></div>
-	<div class='addy_el3'></div>
 </header>
 <main id='main'>
-	<menu>
+	<menu id='menu' class='l'>
 		<p class='center_text'>МЕНЮ</p>
 		<aside class='center'>
-			<button>Отправить</button>
+			<button id='save'>Сохранить</button>
 		</aside>
 		<p class='center_text'>ИНСТРУКЦИЯ</p>
 		<ul >
 			<li class = 'left_text'><p class='base_text'>Чтобы добавить элемент нажмите на кнопку слева от образа</p></li>
 			<li class = 'left_text'><p class='base_text'>Чтобы передвинуть элемент тащите за нижнюю кнопку элемента</p></li>
-			<li class = 'left_text'><p class='base_text'>Для открытия меню нажмите на чёрный уголок</p></li>
+			<li class = 'left_text'><p class='base_text'>Для открытия редактора нажмите на уголок</p></li>
+			<li class = 'left_text'><p class='base_text'>В редакторе текста двойной пробел переводит на следующую строку</p></li>
 		</ul>
+		<p class='center_text'>СТАНДАРТНЫЕ НАСТРОЙКИ</p>
+		<p class='inl_blk_menu_text margin_left'>Кегль:</p>
+		<select id='standart_slct' class='inl_blk_menu_text'>
+			<option value='12'>12</option>
+			<option value='14'>14</option>
+			<option value='16'>16</option>
+			<option value='18'>18</option>
+			<option value='20'>20</option>
+		</select>
+		<br clear="all" />
+		<p class='inl_blk_menu_text margin_left white_text'>Полужирный / обычный:</p>
+		<button id='standart_butt' class='button_bold'>B</button>
 	</menu>
-	<article>
+	<div id='art' class='c'>
 		<script src="scripts/node_modules/jquery/src/jquery.js"></script>
 		<script src="scripts/node_modules/raphael/raphael.js"></script>
+		<script src="scripts/node_modules/raphael.export.js"></script>
+		<script src='scripts/node_modules/file-saver/FileSaver.min.js'></script>
+		<script src='scripts/node_modules/blob/index.js'></script>
+		<script src='scripts/node_modules/alferov-angular-file-saver/dist/angular-file-saver.bundle.js'></script>
 		<script src="scripts/require.js" data-main="scripts/index"></script>
 		<script src="scripts/index.js"></script>
-	</article>
+	</div>
 </main>
 </body>
 </html>

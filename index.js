@@ -10,12 +10,17 @@ const h = 50;
 /**x для точки верхнего левого угла*/
 const w = 240;
 /**желаемый размер поля*/
-const widthSizePaper = document.body.offsetWidth - w + 16;
+//const widthSizePaper = document.body.offsetWidth - w + 16;
 const heightSizePaper = ((screen.height - h) / 1) - h - topSizeMenuBrowser;
 /**холст */
-let paper = Raphael(w, h, widthSizePaper, heightSizePaper);
+const art = document.getElementById('art');
+const m = document.getElementById('menu');
+let div_for_paper = art.style.height = (heightSizePaper - 29) + 'px';
+let paper = Raphael('art');
+//границы меню
+m.style.height = (heightSizePaper - 29) + 'px';
 /**границы поля */
-const myfill = paper.rect(0, 0, widthSizePaper, heightSizePaper).attr('fill', '#666').attr('stroke', '#101010');
+const myfill = paper.rect(0, 0, art.offsetWidth, art.offsetHeight).attr('fill', '#666').attr('stroke', '#101010');
 /**набор объектов*/
 const mySet = paper.set();
 
@@ -45,31 +50,23 @@ class Line{
     }
     /**
      * Изменить координаты начала или конца
-     * @param {point} point текущая координата движимого образа
-     * @param {number} num уникальный номер движимого образа
-     * @param {number} begin_or_end 0 or 1, if 0 -- begin
+     * @param {number} x текущая координата движимого образа
+     * @param {number} y текущая координата движимого образа
+     * @param {number} i 0 or 1, if 0 -- begin
      */
     change_coord(x,y,i){
         this.pathArray[i][1] = x;
         this.pathArray[i][2] = y;
         this.line.attr({path: this.pathArray});
-
-        /*let px,py;
-        if ( i === 0 ) {
-            this.pointt.x += x;
-            this.pointt.y += y;
-            px = pointt.x;
-            py = pointt.y;
-        };
-        if ( i === 1 ) {
-            this.pointf.x += x;
-            this.pointf.y += y;
-            px = pointf.x;
-            py = pointf.y;
-        };
-        this.pathArray[i][0] = px;
-        this.pathArray[i][1] = py;
-        alert('OLOLOLO');*/
+    }
+    /**
+     * Изменить координаты начала или конца
+     * @param {number} parent_num имя родителя
+     * @param {point} point_to координата родителя
+     */
+    change_parent(parent_num,point_to){
+        this.from = strnum_to;
+        this.pointf = point_to;
     }
 }
 
@@ -106,25 +103,6 @@ Raphael.st.draggable = function(point,form) {
         };
     this.drag(moveFnc, startFnc, endFnc); 
 }
-
-/*Raphael.st.draggable2 = function(point, line){
-    let start = function () {
-        this.cx = this.attr("cx"),
-        this.cy = this.attr("cy");
-    },
-    move = function (dx, dy) {
-        let X = this.cx + dx,
-            Y = this.cy + dy;
-        this.attr({cx: X, cy: Y});
-        pathArray[1][1] = X;
-        pathArray[1][2] = Y;
-        path.attr({path: pathArray});
-    },
-    up = function () {
-        this.dx = this.dy = 0;
-    };
-    this.drag(move,start,up);
-}*/
 
 //ОБЪЕКТ РЕДАКТОР
 function Redactor() {
@@ -304,9 +282,10 @@ function Redactor() {
 
             const button = document.createElement('button');
             button.className='button_agree';
+            button.innerText= 'OK';
             const button_bold = document.createElement('button');
             button_bold.innerHTML = "B";
-            button_bold.className = 'button_bold';
+            button_bold.className = 'button_bold padding_tb';
             let newInput = document.createElement('input');
             let slct = document.createElement('select');
             slct.className = 'slct_style';
@@ -316,6 +295,21 @@ function Redactor() {
             let opt3 = document.createElement('option'); slct.appendChild(opt3);
             let opt4 = document.createElement('option'); slct.appendChild(opt4);
             let opt5 = document.createElement('option'); slct.appendChild(opt5);
+
+            //возьмём из html индекс выбранного по умолчанию option из стандартных настроек, выставленных пользователем
+            const std_slct = document.getElementById("standart_slct");
+            const ind = std_slct.selectedIndex;
+            
+            //количество option должно совпадать! 
+            if (slct.options.length !== std_slct.options.length) alert('Количество option не совпадает');
+
+            for (let i = 0; i < slct.options.length; i++){
+                if (i === ind)
+                    //нужному option присвоим атрибут селектед
+                    slct.options[ind].selected = 'selected';
+                else
+                    slct.options[i].selected = undefined;
+            }
 
             opt1.value="12"; opt1.innerText = "12";
             opt2.value="14"; opt2.innerText = "14";
@@ -334,14 +328,20 @@ function Redactor() {
             
             let copyThis = this;
 
-            let bold = false;
+            button_bold.pressed = std_butt.pressed;
+            if (button_bold.pressed){
+                button_bold.className ='clicked_bold';
+            }else{
+                button_bold.className ='button_bold';
+            }
+
             button_bold.onclick = function(){
-                if (!bold){
-                    bold = true;
-                    button_bold.className='clicked_bold';
+                if (!button_bold.pressed){
+                    button_bold.className ='clicked_bold';
+                    button_bold.pressed = true;
                 }else{
-                    bold = false;
-                    button_bold.className='button_bold';
+                    button_bold.className ='button_bold';
+                    button_bold.pressed = false;
                 }
             };
             button.onclick = function(){
@@ -353,7 +353,7 @@ function Redactor() {
                 //2 - место, занимаемое текстовым элементом
                 //С помощью данной строчки можно изменять текст внутри
                 txt[2].attr({text: new_text, fill: '#000', 'font-size': slct.value});
-                if (bold) {
+                if (button_bold.pressed) {
                     txt[2].attr({'font-weight': 'bold'});
                 } else {
                     txt[2].attr({'font-weight': 'normal'});
@@ -376,13 +376,19 @@ function Redactor() {
             div1.className = 'button';
             div2.className = 'input';
             input.type = 'file';
-            input.setAttribute('onchange',
-            'let tv = this.value; tv = tv.replace(/.+(?=\\)\\/g,\'\'); document.getElementById(\'div2_id\').innerHTML = tv;'
-            );
 
             div1.innerHTML = 'Выбрать';
             div2.innerHTML = 'Выберете файл для '+this.str_uniqNum;
             div2.id = 'div2_id';
+            
+            input.addEventListener(
+                'change',
+                function() { 
+                    let t = replacer(this.value)
+                    div2.innerHTML = t;
+                },
+                false
+            );
 
             document.getElementById('for_adding_input2').appendChild(label);
             label.appendChild(div1);
@@ -396,7 +402,7 @@ function Redactor() {
         //каждый из которых может быть нажат, чтобы изменить аттрибуты круга и треугольника
         if (index === 2){
             let icon_set = paper.set();
-            const colors = ['#c33','#11bb66','#00f','#cc33aa','#bbbb66','#4bf','#000'];
+            const colors = ['red','#c33','#cc33aa','green','#11bb66','#4bf','blue','#bbbb66','#000'];
             y -= 2*hIcon;
             x += wIcon + 5;
             hIcon /= 1.5;
@@ -404,7 +410,7 @@ function Redactor() {
             for (let i = 0; i < colors.length; i++){
                 //находясь на иконке цвета мы имеем "y" такой,
                 //что он находится на уровне этой иконки,а мы хотим цвета расположить сверху вниз от начала
-                let fill = this.create_fill_for_icon_color(x,y + i*hIcon,wIcon,hIcon,colors[i],i);
+                let fill = this.create_fill_for_icon_color(x,y + i*hIcon,wIcon,hIcon,colors[i]);
                 icon_set.push(fill);
             }
             return icon_set;
@@ -418,6 +424,8 @@ function Redactor() {
                 p === null;
                 this.myform.array_with_my_lines[0].line.remove();
                 this.myform.array_with_my_lines[0] === null;
+            }else{
+
             }
 
             this.base_set.forEach(
@@ -459,26 +467,14 @@ function Redactor() {
      * @param {number} wIcon размер иконки по ширине
      * @param {number} hIcon размер иконки по высоте
      * @param {string} attribute выбранный цвет
-     * @param {number} index номер иконки цвета
      */
-    this.create_fill_for_icon_color = function(x,y,wIcon,hIcon,attribute,index){
+    this.create_fill_for_icon_color = function(x,y,wIcon,hIcon,attribute){
         let copyThis = this;
         let fill = paper.rect(x,y,wIcon,hIcon).attr({"fill": attribute, "stroke-width": 0});
-        //требуется изменить при клике -- аттрибут цвета окружности и треугольника
-        fill.click( function() {
-            let end = copyThis.count_els_in_mv_set;
-            //вытащить из набора круг и уголок и взять менюшный
-            let el = copyThis.moving_set.items.splice(0, end);
-            el[0].attr({"stroke": attribute});
-            el[1].attr({"fill": attribute, "stroke": attribute});
-            el[3][0].attr({"stroke": attribute});
-            //форма должна запомнить, что изменила цвет
-            copyThis.myform.my_color = attribute;
 
-            for (let i = 0; i < el[end - 1].length; i++)
-                el[end - 1][i].attr({"stroke": attribute});
-            for (let i = 0; i < end; i++)
-                copyThis.moving_set.push(el[i]);
+        fill.click( function() {
+            //изменение цвета образа
+            change_color(copyThis.myform, copyThis.moving_set, attribute);
         });
 
         return fill;
@@ -511,7 +507,7 @@ function Redactor() {
 class Form{
     //создание образа
     //уникальный номер по умолчанию для центрального образа - 1
-    constructor(cursor_x = widthSizePaper/2, cursor_y = heightSizePaper/2, parent = null)
+    constructor(cursor_x = art.offsetWidth/2, cursor_y = art.offsetHeight/2, parent = null)
     {
         //ОБЪЯВЛЕНИЕ ЛОКАЛЬНЫХ ПЕРЕМЕННЫХ
 
@@ -578,7 +574,7 @@ class Form{
             let horizontal_line = paper.path( ["M", cxia, cyia - 5, "L", cxia, cyia + 5 ] ).attr({"stroke-width": 2});
         set_ic_add.push(icon_add, vertical_line, horizontal_line);
 
-        let text = paper.text(cursor_x, y_cur_sh, "rename me").attr({fill: '#888888',"font-size" : 16});
+        let text = paper.text(cursor_x, y_cur_sh, "Назови меня").attr({fill: '#888888',"font-size" : 16});
 
         let number = paper.text(cursor_x - sizeCircle*0.8, y_cur_sh + sizeCircle*1, this.unum).attr({fill: '#fff',"font-size" : 10});
 
@@ -604,6 +600,11 @@ class Form{
         base.push(moving_set);
         mySet.push(base);
         
+        if (parent === null){
+            //меняем цвет атрибутов
+            change_color(this,moving_set,'red');
+        }
+
         //ВСТРАИВАНИЕ СОБЫТИЙ
 
         let copyThis = this;
@@ -636,7 +637,11 @@ class Form{
          */
         set_ic_add.click(function(event)
         {
-            let el = new Form(event.clientX - 100, event.clientY - 100, copyThis);
+            let koef_y = 1, koef_x = -1;
+            if (event.clientY - 200 < 0) koef_y = -1;
+            if (event.clientX + 500 > art.offsetWidth) koef_x = -6.5;
+
+            let el = new Form(event.clientX + 50*koef_x, event.clientY - 100*koef_y, copyThis);
             //для новых линий сдвиг нужен
             let copy_point = new point.default(copyThis.my_point.x + pointEl.x, copyThis.my_point.y + pointEl.y);
 
@@ -658,6 +663,60 @@ let el = new Form();
 myfill.click(function(){
     redactor.close();
 });
+
+//Работа с имеющимся html:
+const std_butt = document.getElementById('standart_butt');
+std_butt.pressed = false;
+std_butt.onclick = function(event){
+    if (!std_butt.pressed){
+        std_butt.className = 'clicked_bold';
+        std_butt.pressed = true;
+    }else{
+        std_butt.className = 'button_bold';
+        std_butt.pressed = false;
+    }
+};
+
+const butt_save = document.getElementById('save');
+butt_save.onclick = function(event){
+    if (redactor.isOpen) redactor.close();
+    var svgData = paper.toSVG();
+    var svgBlob = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"});
+    var svgUrl = URL.createObjectURL(svgBlob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = "newesttree.svg";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+/**
+ * Изменение цвета образа
+ * @param {*} form образ
+ * @param {*} moving_set набор движимых элементов
+ * @param {*} attribute желаемый цвет
+ */
+function change_color(form,moving_set,attribute){
+    //окружность образа
+    moving_set[0].attr({"stroke": attribute});
+    //уголок
+    moving_set[1].attr({"fill": attribute, "stroke": attribute});
+    //окружность иконки добавления нового образа
+    moving_set[3][0].attr({"stroke": attribute});
+    //редактор
+    if (moving_set[5]) moving_set[5].attr({"stroke": attribute});
+
+    //форма должна запомнить, что изменила цвет
+    form.my_color = attribute;
+}
+
+function replacer(txt){
+    if (txt !== undefined){
+        let re = /.+(?=\\)\\/g;
+        return txt.replace(re,'');
+    }
+}
 
 //описать событие при нажатии на кружок
 //появится панель быстрого доступа с иконками
